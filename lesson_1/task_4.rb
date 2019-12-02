@@ -14,7 +14,7 @@ if d > 0
   d_sqrt = Math.sqrt(d)
   x1 = (-b + d_sqrt) / (2*a)
   x2 = (-b - d_sqrt) / (2*a)
-  puts "Дискриминант = #{_D}"
+  puts "Дискриминант = #{d_sqrt}"
   puts "Корень 1 = #{x1}"
   puts "Корень 2 = #{x2}"
 elsif d == 0
