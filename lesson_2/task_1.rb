@@ -5,4 +5,4 @@ hash = { jan: 31, feb: 28, mar: 31,
 }
 hash.each do |k, v|
   puts "#{k}: #{v}" if v == 30
-  end
+end
