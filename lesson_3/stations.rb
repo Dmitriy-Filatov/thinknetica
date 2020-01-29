@@ -21,13 +21,12 @@ class Station
 end
 
 class Route
-  attr_reader :stations, :first_station
+  attr_reader :first_station
 
   def initialize(first_station, last_station)
     @first_station = first_station
     @last_station = last_station
     @middle_stations = []
-    @stations = [@first_station, *@middle_stations, @last_station]
   end
 
   def get_station(station)
@@ -38,8 +37,8 @@ class Route
     @middle_stations.delete(station)
   end
 
-  def all_stations
-    puts [@first_station, *@middle_stations, @last_station]
+  def stations
+    p [@first_station, *@middle_stations, @last_station]
   end
 end
 
