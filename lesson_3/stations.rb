@@ -38,7 +38,7 @@ class Route
   end
 
   def stations
-    p [@first_station, *@middle_stations, @last_station]
+    [@first_station, *@middle_stations, @last_station]
   end
 end
 
