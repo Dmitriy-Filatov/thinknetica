@@ -1,23 +1,20 @@
+# frozen_string_literal: true
+
 class Station
-  attr_reader :trains
+  attr_reader :trains, :name
 
   def initialize(name)
     @name = name
     @trains = []
   end
 
-  def get_train(train)
+  def add_train(train)
     @trains << train
-  end
-
-  def return_trains_list(type)
-    trains.select { |train| train.train_type == type }
   end
 
   def send_train(train)
     trains.delete(train)
   end
-
 end
 
 class Route
@@ -38,19 +35,18 @@ class Route
   end
 
   def stations
-    p [@first_station, *@middle_stations, @last_station]
+    [@first_station, *@middle_stations, @last_station]
   end
 end
 
 class Train
   attr_accessor :speed
-  attr_reader :number, :train_type, :how_many_railcars
+  attr_reader :number
 
-  def initialize(number, train_type, how_many_railcars)
+  def initialize(number)
     @number = number
-    @train_type = train_type
-    @how_many_railcars = how_many_railcars
     @speed = 0
+    @railcars = []
   end
 
   def to_accelerate(value)
@@ -65,21 +61,23 @@ class Train
     @speed = 0
   end
 
-  def hitch_a_railcar
-    @how_many_railcars += 1 if @speed.zero?
-  end
-
   def uncouple_a_railcar
-    @how_many_railcars -= 1 if @speed.zero? && @how_many_railcars > 0
+    @how_many_railcars -= 1 if @speed.zero? && @how_many_railcars.positive?
   end
 
-  def set_route(route)
+  def assign_route(route)
     @route = route
     set_train_to_first_station
   end
 
+  def hitch_a_railcar(railcar)
+    return if @speed.zero?
+
+    @railcars << railcar
+  end
+
   def set_train_to_first_station
-    @route.first_station.get_train(self)
+    @route.first_station.add_train(self)
   end
 
   def current_station
@@ -109,4 +107,26 @@ class Train
     previous_station.get_train(self)
     current_station.send_train(self)
   end
+end
+
+class PassengerTrain < Train
+  def hitch_a_railcar(railcar)
+    return unless railcar.is_a?(PassengerRailcar)
+
+    super(railcar)
+  end
+end
+
+class CargoTrain < Train
+  def hitch_a_railcar(railcar)
+    return unless railcar.is_a?(CargoRailcar)
+
+    super(railcar)
+  end
+end
+
+class PassengerRailcar
+end
+
+class CargoRailcar
 end
