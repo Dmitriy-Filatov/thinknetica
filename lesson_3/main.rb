@@ -13,8 +13,8 @@ class Main
     loop do
       print_menu
       menu_number = gets.chomp
-      break
-      if menu_number == '0'
+      break if menu_number == '0'
+
       detect_user_input(menu_number)
     end
   end
@@ -145,7 +145,7 @@ class Main
 
   end
 
-  def print_menue
+  def print_menu
     puts 'Чтобы создать станцию введите 1'
     puts 'Чтобы создать поезда введите 2'
     puts 'Чтобы создать маршруты введите 3'
