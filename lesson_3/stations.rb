@@ -18,7 +18,7 @@ class Station
 end
 
 class Route
-  attr_reader :first_station
+  attr_reader :first_station, :last_station
 
   def initialize(first_station, last_station)
     @first_station = first_station
@@ -36,6 +36,10 @@ class Route
 
   def stations
     [@first_station, *@middle_stations, @last_station]
+  end
+
+  def name
+    "#{@first_station.name} - #{@last_station.name}"
   end
 end
 
@@ -61,9 +65,11 @@ class Train
     @speed = 0
   end
 
-  def uncouple_a_railcar
-    @how_many_railcars -= 1 if @speed.zero? && @how_many_railcars.positive?
-  end
+  # def uncouple_a_railcar
+  #   @how_many_railcars -= 1 if @speed.zero? && @how_many_railcars.positive?
+  # end
+
+  
 
   def assign_route(route)
     @route = route
@@ -126,7 +132,13 @@ class CargoTrain < Train
 end
 
 class PassengerRailcar
+  def initialize
+    @type = 'Passanger'
+  end
 end
 
 class CargoRailcar
+  def initialize
+    @type = 'Cargo'
+  end
 end

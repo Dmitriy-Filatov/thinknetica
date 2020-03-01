@@ -9,11 +9,12 @@ class Main
     @railcars = []
   end
 
-  def call
+  def start
     loop do
       print_menu
       menu_number = gets.chomp
-      break if menu_number == '0'
+      break
+      if menu_number == '0'
       detect_user_input(menu_number)
     end
   end
@@ -51,8 +52,8 @@ class Main
     puts 'Введите название станции'
     station_name = gets.chomp
     @stations << Station.new(station_name)
-    puts 'Станции:'
-    puts @stations.map(&:name)
+    puts 'Созданы станции:'
+    @stations.each.with_index(1) { |station, index| puts "#{index}. #{station.name}" }
   end
 
   def create_train
@@ -69,36 +70,51 @@ class Main
         number = gets.chomp
         PassengerTrain.new(number)
       else
-        puts 'Неверное значение'
+        puts 'Неверное значение. Введите 1, если поезд грузовой, 2, если пассажирский'
       end
     @trains << train if train
   end
 
   def create_route
-    puts 'Выберете название станций из списка'
-    puts @stations.map(&:name)
-    puts 'Введите название первой станции'
-    first_station_name = gets.chomp
-    first_station = @stations.detect { |station| station.name == first_station_name}
-    puts 'Введите название последней станции'
-    last_station_name = gets.chomp
-    last_station = @stations.detect { |station| station.name == last_station_name}
-    @routes << Route.new(first_station, last_station)
+    puts 'Создаем маршрут. Сначала введите номер станции отправления.'
+    @stations.each.with_index(1) { |station, index| puts "#{index}. #{station.name}" }
+    station_index = gets.to_i
+    first_station = @stations[station_index - 1]
+    puts 'Теперь введите номер станции прибытия.'
+    @stations.each.with_index(1) { |station, index| puts "#{index}. #{station.name}" }
+    station_index = gets.to_i
+    last_station = @stations[station_index - 1]
+    route = Route.new(first_station, last_station)
+    @routes << route
+    p "Маршрут #{route.name} создан."
   end
 
   def add_station_to_the_route
-    puts 'Введите название промежуточной станции'
-    middle_station_name = gets.chomp
-    @stations.insert(-2, Station.new(middle_station_name))
+    puts 'Введите номер маршрута'
+    @routes.each.with_index(1) { |route, index| puts "#{index}. #{route.name}" }
+    route_index = gets.to_i
+    route = @routes[route_index - 1]
+    puts 'Введите номер промежуточной станции'
     puts 'Станции:'
-    puts @stations.map(&:name)
-    puts 'Введите маршрут'
-    route = gets.chomp
-    route.get_station(middle_station_name)
+    @stations.each.with_index(1) { |station, index| puts "#{index}. #{station.name}" }
+    station_index = gets.to_i
+    station = @stations[station_index - 1]
+    route.get_station(station)
+    puts "Станция #{station} добавлена в маршрут #{route.name}"
   end
 
   def delete_station_from_the_route
-
+    puts 'Введите номер маршрута'
+    @routes.each.with_index(1) { |route, index| puts "#{index}. #{route.name}" }
+    route_index = gets.to_i
+    route = @routes[route_index - 1]
+    puts 'Введите номер станции, которую надо удалить'
+    puts 'Станции:'
+    @stations.each.with_index(1) { |station, index| puts "#{index}. #{station.name}" }
+    station_index = gets.to_i
+    station = @stations[station_index - 1]
+    route.delete_station(station)
+    puts "Станция #{station} удалена из маршрута #{route.name}"
   end
 
   def set_a_train_route
@@ -129,7 +145,7 @@ class Main
 
   end
 
-  def print_menu
+  def print_menue
     puts 'Чтобы создать станцию введите 1'
     puts 'Чтобы создать поезда введите 2'
     puts 'Чтобы создать маршруты введите 3'
