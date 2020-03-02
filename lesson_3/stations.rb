@@ -45,10 +45,11 @@ end
 
 class Train
   attr_accessor :speed
-  attr_reader :number
+  attr_reader :number, :type, :railcars, :route
 
   def initialize(number)
     @number = number
+    @type = type
     @speed = 0
     @railcars = []
   end
@@ -68,8 +69,6 @@ class Train
   # def uncouple_a_railcar
   #   @how_many_railcars -= 1 if @speed.zero? && @how_many_railcars.positive?
   # end
-
-  
 
   def assign_route(route)
     @route = route
@@ -131,14 +130,22 @@ class CargoTrain < Train
   end
 end
 
-class PassengerRailcar
-  def initialize
-    @type = 'Passanger'
+class RailCar
+  attr_reader :type
+
+  def initialize(type)
+    @type = type
   end
 end
 
-class CargoRailcar
+class PassengerRailcar < RailCar
   def initialize
-    @type = 'Cargo'
+    @type = 'passanger'
+  end
+end
+
+class CargoRailcar < RailCar
+  def initialize
+    @type = 'cargo'
   end
 end

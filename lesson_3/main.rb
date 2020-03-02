@@ -49,7 +49,7 @@ class Main
   end
 
   def create_station
-    puts 'Введите название станции'
+    puts 'Создаём станции. Введите название станции.'
     station_name = gets.chomp
     @stations << Station.new(station_name)
     puts 'Созданы станции:'
@@ -57,22 +57,24 @@ class Main
   end
 
   def create_train
-    puts 'Введите 1, если поезд грузовой, 2, если пассажирский'
+    puts 'Создаем поезда. Введите 1, если поезд грузовой, 2, если пассажирский.'
     number = gets.chomp
     train =
       case number
       when '1'
-        puts 'Введите номер поезда'
+        puts 'Введите номер поезда.'
         number = gets.chomp
         CargoTrain.new(number)
       when '2'
-        puts 'Введите номер поезда'
+        puts 'Введите номер поезда.'
         number = gets.chomp
         PassengerTrain.new(number)
       else
-        puts 'Неверное значение. Введите 1, если поезд грузовой, 2, если пассажирский'
+        puts 'Неверное значение. Введите 1, если поезд грузовой, 2, если пассажирский.'
       end
     @trains << train if train
+    puts 'Созданы поезда:'
+    @trains.each.with_index(1) { |train, index| puts "#{index}. #{train.number}" }
   end
 
   def create_route
@@ -90,7 +92,7 @@ class Main
   end
 
   def add_station_to_the_route
-    puts 'Введите номер маршрута'
+    puts 'Добавим в маршрут промежуточные станции. Введите номер маршрута.'
     @routes.each.with_index(1) { |route, index| puts "#{index}. #{route.name}" }
     route_index = gets.to_i
     route = @routes[route_index - 1]
@@ -100,29 +102,42 @@ class Main
     station_index = gets.to_i
     station = @stations[station_index - 1]
     route.get_station(station)
-    puts "Станция #{station} добавлена в маршрут #{route.name}"
+    puts "Станция #{station} добавлена в маршрут #{route.name}."
   end
 
   def delete_station_from_the_route
-    puts 'Введите номер маршрута'
+    puts 'Удалим станцию из маршрута. Сначала введите номер маршрута.'
     @routes.each.with_index(1) { |route, index| puts "#{index}. #{route.name}" }
     route_index = gets.to_i
     route = @routes[route_index - 1]
-    puts 'Введите номер станции, которую надо удалить'
+    puts 'Теперь введите номер удаляемой станции.'
     puts 'Станции:'
     @stations.each.with_index(1) { |station, index| puts "#{index}. #{station.name}" }
     station_index = gets.to_i
     station = @stations[station_index - 1]
     route.delete_station(station)
-    puts "Станция #{station} удалена из маршрута #{route.name}"
+    puts "Станция #{station} удалена из маршрута #{route.name}."
   end
 
   def set_a_train_route
-
+    puts 'Назначаем поезду маршрут. Сначала введите порядковый номер поезда.'
+    @trains.each.with_index(1) { |train, index| puts "#{index}. #{train.number}" }
+    train_index = gets.to_i
+    train = @trains[train_index - 1]
+    puts 'Теперь введите номер маршрута.'
+    @routes.each.with_index(1) { |route, index| puts "#{index}. #{route.name}" }
+    route_index = gets.to_i
+    route = @routes[route_index - 1]
+    train.assign_route(route)
+    puts "Поезду номер #{train.number} назначен маршрут #{route.name}."
   end
 
   def hook_the_railcar_to_the_train
-
+    puts 'Прицепляем вагон. Сначала введите назначенный поезду номер.'
+    @trains.each.with_index(1) { |train, index| puts "#{index}. #{train.number}" }
+    number = gets.to_i
+    train = @trains.detect { |train| train.number == number }
+    train.hitch_a_railcar(RailCar.new(train))
   end
 
   def unhook_the_railcar_from_the_train
