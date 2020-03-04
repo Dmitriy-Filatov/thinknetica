@@ -104,12 +104,12 @@ class Train
   end
 
   def move_to_next_station
-    next_station.get_train(self)
+    next_station.add_train(self)
     current_station.send_train(self)
   end
 
   def move_to_previous_station
-    previous_station.get_train(self)
+    previous_station.add_train(self)
     current_station.send_train(self)
   end
 end

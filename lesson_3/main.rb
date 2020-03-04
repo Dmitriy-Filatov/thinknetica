@@ -38,9 +38,9 @@ class Main
     when '8'
       unhook_the_railcar_from_the_train
     when '9'
-      move_to_next_station
+      move_to_next_station_forward
     when '10'
-      move_to_previous_station
+      move_to_previous_station_back
     when '11'
       view_station_list
     when '12'
@@ -138,7 +138,7 @@ class Main
     number = gets.to_i
     train = @trains.detect { |train| train.number.to_i == number }
     train.hitch_a_railcar
-    puts "В поезде #{train.number} - #{train.railcares.size} вагонов."
+    puts "В поезде #{train.number} - #{train.railcars.size} вагонов."
   end
 
   def unhook_the_railcar_from_the_train
@@ -147,23 +147,39 @@ class Main
     number = gets.to_i
     train = @trains.detect { |train| train.number.to_i == number }
     train.uncouple_a_railcar
-    puts "В поезде #{train.number} - #{train.railcares.size} вагонов."
+    puts "В поезде #{train.number} - #{train.railcars.size} вагонов."
   end
 
-  def move_to_next_station
-
+  def move_to_next_station_forward
+    puts "Выбираем поезд: введите назначенный поезду номер."
+    @trains.each { |train| puts train.number }
+    number = gets.to_i
+    train = @trains.detect { |train| train.number.to_i == number }
+    train.move_to_next_station
+    puts "Поезд прибыл на станцию #{train.current_station.name}"
   end
 
-  def move_to_previous_station
-
+  def move_to_previous_station_back
+    puts "Выбираем поезд: введите назначенный поезду номер."
+    @trains.each { |train| puts train.number }
+    number = gets.to_i
+    train = @trains.detect { |train| train.number.to_i == number }
+    binding.pry
+    train.move_to_previous_station
+    puts "Поезд прибыл на станцию #{train.current_station.name}"
   end
 
   def view_station_list
-
+    puts 'Cписок всех станций:'
+    @stations.each.with_index(1) { |station, index| puts "#{index}. #{station.name}" }
   end
 
   def view_the_list_of_the_trains_at_the_station
-
+    puts 'Смотрим список поездов. Введите порядковый номер станции.'
+    @stations.each.with_index(1) { |station, index| puts "#{index}. #{station.name}" }
+    station_index = gets.to_i
+    station = @stations[station_index - 1]
+    puts "На станции #{station.name} следующие поезда #{station.trains}"
   end
 
   def print_menu
