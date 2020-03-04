@@ -66,19 +66,19 @@ class Train
     @speed = 0
   end
 
-  # def uncouple_a_railcar
-  #   @how_many_railcars -= 1 if @speed.zero? && @how_many_railcars.positive?
-  # end
+  def hitch_a_railcar(railcar)
+    return unless @speed.zero?
+
+    @railcars << railcar
+  end
+
+  def uncouple_a_railcar
+    @railcars.pop if @speed.zero? && !@railcars.empty?
+  end
 
   def assign_route(route)
     @route = route
     set_train_to_first_station
-  end
-
-  def hitch_a_railcar(railcar)
-    return if @speed.zero?
-
-    @railcars << railcar
   end
 
   def set_train_to_first_station
@@ -115,37 +115,19 @@ class Train
 end
 
 class PassengerTrain < Train
-  def hitch_a_railcar(railcar)
-    return unless railcar.is_a?(PassengerRailcar)
-
-    super(railcar)
+  def hitch_a_railcar
+    super(PassengerRailcar.new)
   end
 end
 
 class CargoTrain < Train
-  def hitch_a_railcar(railcar)
-    return unless railcar.is_a?(CargoRailcar)
-
-    super(railcar)
+  def hitch_a_railcar
+    super(CargoRailcar.new)
   end
 end
 
-class RailCar
-  attr_reader :type
-
-  def initialize(type)
-    @type = type
-  end
+class PassengerRailcar
 end
 
-class PassengerRailcar < RailCar
-  def initialize
-    @type = 'passanger'
-  end
-end
-
-class CargoRailcar < RailCar
-  def initialize
-    @type = 'cargo'
-  end
+class CargoRailcar
 end

@@ -134,14 +134,20 @@ class Main
 
   def hook_the_railcar_to_the_train
     puts 'Прицепляем вагон. Сначала введите назначенный поезду номер.'
-    @trains.each.with_index(1) { |train, index| puts "#{index}. #{train.number}" }
+    @trains.each { |train| puts train.number }
     number = gets.to_i
-    train = @trains.detect { |train| train.number == number }
-    train.hitch_a_railcar(RailCar.new(train))
+    train = @trains.detect { |train| train.number.to_i == number }
+    train.hitch_a_railcar
+    puts "В поезде #{train.number} - #{train.railcares.size} вагонов."
   end
 
   def unhook_the_railcar_from_the_train
-
+    puts 'Отцепляем вагон. Сначала введите назначенный поезду номер.'
+    @trains.each { |train| puts train.number }
+    number = gets.to_i
+    train = @trains.detect { |train| train.number.to_i == number }
+    train.uncouple_a_railcar
+    puts "В поезде #{train.number} - #{train.railcares.size} вагонов."
   end
 
   def move_to_next_station
