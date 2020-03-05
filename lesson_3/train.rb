@@ -1,48 +1,5 @@
 # frozen_string_literal: true
 
-class Station
-  attr_reader :trains, :name
-
-  def initialize(name)
-    @name = name
-    @trains = []
-  end
-
-  def add_train(train)
-    @trains << train
-  end
-
-  def send_train(train)
-    trains.delete(train)
-  end
-end
-
-class Route
-  attr_reader :first_station, :last_station
-
-  def initialize(first_station, last_station)
-    @first_station = first_station
-    @last_station = last_station
-    @middle_stations = []
-  end
-
-  def get_station(station)
-    @middle_stations << station
-  end
-
-  def delete_station(station)
-    @middle_stations.delete(station)
-  end
-
-  def stations
-    [@first_station, *@middle_stations, @last_station]
-  end
-
-  def name
-    "#{@first_station.name} - #{@last_station.name}"
-  end
-end
-
 class Train
   attr_accessor :speed
   attr_reader :number, :type, :railcars, :route
@@ -85,6 +42,20 @@ class Train
     @route.first_station.add_train(self)
   end
 
+  def move_to_next_station
+    next_station.add_train(self)
+    current_station.send_train(self)
+  end
+
+  def move_to_previous_station
+    previous_station.add_train(self)
+    current_station.send_train(self)
+  end
+
+  protected
+
+  # методы ниже унаследованы подклассами
+
   def current_station
     @route.stations.detect do |station|
       station.trains.include?(self)
@@ -102,32 +73,4 @@ class Train
     previous_station_index = current_station_index - 1
     @route.stations[previous_station_index]
   end
-
-  def move_to_next_station
-    next_station.add_train(self)
-    current_station.send_train(self)
-  end
-
-  def move_to_previous_station
-    previous_station.add_train(self)
-    current_station.send_train(self)
-  end
-end
-
-class PassengerTrain < Train
-  def hitch_a_railcar
-    super(PassengerRailcar.new)
-  end
-end
-
-class CargoTrain < Train
-  def hitch_a_railcar
-    super(CargoRailcar.new)
-  end
-end
-
-class PassengerRailcar
-end
-
-class CargoRailcar
 end

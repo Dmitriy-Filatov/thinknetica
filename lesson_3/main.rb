@@ -1,5 +1,13 @@
+# frozen_string_literal: true
+
 require 'pry'
-require_relative 'stations'
+require_relative 'station'
+require_relative 'route'
+require_relative 'train'
+require_relative 'passenger_train'
+require_relative 'cargo_train'
+require_relative 'passanger_railcar'
+require_relative 'cargo_railcar'
 
 class Main
   def initialize
@@ -8,6 +16,26 @@ class Main
     @routes = []
     @railcars = []
   end
+
+  def print_menu
+    puts 'Чтобы создать станцию введите 1'
+    puts 'Чтобы создать поезда введите 2'
+    puts 'Чтобы создать маршруты введите 3'
+    puts 'Чтобы добавить станцию в маршрут введите 4'
+    puts 'Чтобы удалить станцию из маршрута введите 5'
+    puts 'Чтобы назначить маршрут поезду введите 6'
+    puts 'Чтобы прицепить вагоны к поезду введите 7'
+    puts 'Чтобы отцепить вагоны от поезда введите 8'
+    puts 'Чтобы переместить поезд по маршруту вперед введите 9'
+    puts 'Чтобы переместить поезд по маршруту назад введите 10'
+    puts 'Чтобы просматривать список станций введите 11'
+    puts 'Чтобы просматривать список поездов на станции ведите 12'
+    puts 'Чтобы выйти из меню нажмите 0'
+  end
+
+  private
+
+  # методы ниже вызываются только в текущем классе
 
   def start
     loop do
@@ -70,7 +98,7 @@ class Main
         number = gets.chomp
         PassengerTrain.new(number)
       else
-        puts 'Неверное значение. Введите 1, если поезд грузовой, 2, если пассажирский.'
+        puts 'Хм ... Введите 1, если поезд грузовой, 2, если пассажирский.'
       end
     @trains << train if train
     puts 'Созданы поезда:'
@@ -164,7 +192,6 @@ class Main
     @trains.each { |train| puts train.number }
     number = gets.to_i
     train = @trains.detect { |train| train.number.to_i == number }
-    binding.pry
     train.move_to_previous_station
     puts "Поезд прибыл на станцию #{train.current_station.name}"
   end
@@ -180,21 +207,5 @@ class Main
     station_index = gets.to_i
     station = @stations[station_index - 1]
     puts "На станции #{station.name} следующие поезда #{station.trains}"
-  end
-
-  def print_menu
-    puts 'Чтобы создать станцию введите 1'
-    puts 'Чтобы создать поезда введите 2'
-    puts 'Чтобы создать маршруты введите 3'
-    puts 'Чтобы добавить станцию в маршрут введите 4'
-    puts 'Чтобы удалить станцию из маршрута введите 5'
-    puts 'Чтобы назначить маршрут поезду введите 6'
-    puts 'Чтобы прицепить вагоны к поезду введите 7'
-    puts 'Чтобы отцепить вагоны от поезда введите 8'
-    puts 'Чтобы переместить поезд по маршруту вперед введите 9'
-    puts 'Чтобы переместить поезд по маршруту назад введите 10'
-    puts 'Чтобы просматривать список станций введите 11'
-    puts 'Чтобы просматривать список поездов на станции ведите 12'
-    puts 'Чтобы выйти из меню нажмите 0'
   end
 end
