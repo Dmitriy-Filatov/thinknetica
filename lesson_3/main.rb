@@ -6,7 +6,8 @@ require_relative 'route'
 require_relative 'train'
 require_relative 'passenger_train'
 require_relative 'cargo_train'
-require_relative 'passanger_railcar'
+require_relative 'railcar'
+require_relative 'passenger_railcar'
 require_relative 'cargo_railcar'
 
 class Main
@@ -32,10 +33,6 @@ class Main
     puts 'Чтобы просматривать список поездов на станции ведите 12'
     puts 'Чтобы выйти из меню нажмите 0'
   end
-
-  private
-
-  # методы ниже вызываются только в текущем классе
 
   def start
     loop do
@@ -75,6 +72,10 @@ class Main
       view_the_list_of_the_trains_at_the_station
     end
   end
+
+  private
+
+  # методы ниже вызываются только в текущем классе
 
   def create_station
     puts 'Создаём станции. Введите название станции.'
@@ -165,7 +166,7 @@ class Main
     @trains.each { |train| puts train.number }
     number = gets.to_i
     train = @trains.detect { |train| train.number.to_i == number }
-    train.hitch_a_railcar
+    train.hitch_a_railcar(RailCar.new(train.type))
     puts "В поезде #{train.number} - #{train.railcars.size} вагонов."
   end
 
@@ -174,7 +175,7 @@ class Main
     @trains.each { |train| puts train.number }
     number = gets.to_i
     train = @trains.detect { |train| train.number.to_i == number }
-    train.uncouple_a_railcar
+    train.uncouple_a_railcar(train.railcars.last)
     puts "В поезде #{train.number} - #{train.railcars.size} вагонов."
   end
 
@@ -209,3 +210,5 @@ class Main
     puts "На станции #{station.name} следующие поезда #{station.trains}"
   end
 end
+
+Main.new.start

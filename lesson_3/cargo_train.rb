@@ -3,7 +3,7 @@
 require_relative 'train'
 
 class CargoTrain < Train
-  def hitch_a_railcar
-    super(CargoRailcar.new)
+  def initialize(number, type = 'cargo')
+    super
   end
 end

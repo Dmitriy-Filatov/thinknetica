@@ -4,7 +4,7 @@ class Train
   attr_accessor :speed
   attr_reader :number, :type, :railcars, :route
 
-  def initialize(number)
+  def initialize(number, type)
     @number = number
     @type = type
     @speed = 0
@@ -24,13 +24,13 @@ class Train
   end
 
   def hitch_a_railcar(railcar)
-    return unless @speed.zero?
+    return if !@speed.zero? || @type != railcar.type
 
     @railcars << railcar
   end
 
-  def uncouple_a_railcar
-    @railcars.pop if @speed.zero? && !@railcars.empty?
+  def uncouple_a_railcar(railcar)
+    @railcars.delete(railcar) if @speed.zero? && @type == railcar.type
   end
 
   def assign_route(route)
@@ -41,20 +41,6 @@ class Train
   def set_train_to_first_station
     @route.first_station.add_train(self)
   end
-
-  def move_to_next_station
-    next_station.add_train(self)
-    current_station.send_train(self)
-  end
-
-  def move_to_previous_station
-    previous_station.add_train(self)
-    current_station.send_train(self)
-  end
-
-  protected
-
-  # методы ниже унаследованы подклассами
 
   def current_station
     @route.stations.detect do |station|
@@ -72,5 +58,15 @@ class Train
     current_station_index = @route.stations.index(current_station)
     previous_station_index = current_station_index - 1
     @route.stations[previous_station_index]
+  end
+
+  def move_to_next_station
+    next_station.add_train(self)
+    current_station.send_train(self)
+  end
+
+  def move_to_previous_station
+    previous_station.add_train(self)
+    current_station.send_train(self)
   end
 end
