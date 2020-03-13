@@ -5,6 +5,18 @@ require_relative 'company_name'
 class Train
   include CompanyName
 
+  @all_trains = []
+
+  class << self
+    def add_train=(object)
+      @all_trains << object
+    end
+
+    def find(number)
+      @all_trains.detect { |train| train.number == number }
+    end
+  end
+
   attr_accessor :speed
   attr_reader :number, :type, :railcars, :route
 
@@ -13,6 +25,7 @@ class Train
     @type = type
     @speed = 0
     @railcars = []
+    self.class.add_train = self
   end
 
   def to_accelerate(value)
