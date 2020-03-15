@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
+require_relative 'instances_counter'
+
 class Station
+  include InstanceCounter
+
   @all = []
 
   class << self

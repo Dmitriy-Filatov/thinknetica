@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
 require_relative 'company_name'
+require_relative 'instances_counter'
 
 class Train
   include CompanyName
+  include InstanceCounter
 
   @all_trains = []
 
@@ -26,6 +28,7 @@ class Train
     @speed = 0
     @railcars = []
     self.class.add_train = self
+    register_instance
   end
 
   def to_accelerate(value)

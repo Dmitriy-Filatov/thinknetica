@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
 require_relative 'station'
+require_relative 'instances_counter'
 
 class Route
+  include InstanceCounter
   attr_reader :first_station, :last_station
 
   def initialize(first_station, last_station)
