@@ -31,8 +31,8 @@ class Train
     @type = type
     @speed = 0
     @railcars = []
-    self.class.add_train = self
     validate!
+    self.class.add_train = self
     register_instance
   end
 
@@ -98,8 +98,20 @@ class Train
   end
 
   def validate!
-    raise "Number can't be nil" if number.nil?
-    raise "Type can't be empty" if type.empty?
-    raise "Number has invalid format. Expected: xxx-xx or xxxxx" if number !~ NUMBER_FORMAT
+    raise_nil_number_error if number.nil?
+    raise_blank_type_error if type.empty?
+    raise_invalid_format_error if number !~ NUMBER_FORMAT
+  end
+
+  def raise_nil_number_error
+    raise "Number can't be nil"
+  end
+
+  def raise_blank_type_error
+    raise "Type can't be empty"
+  end
+
+  def raise_invalid_format_error
+    raise 'Number has invalid format. Expected: xxx-xx or xxxxx'
   end
 end
