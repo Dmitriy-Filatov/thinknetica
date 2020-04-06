@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require_relative 'company_name'
-require_relative 'instances_counter'
+require_relative 'instance_counter'
 require_relative 'validate'
 
 class Train
@@ -9,7 +9,7 @@ class Train
   include InstanceCounter
   include Validate
 
-  NUMBER_FORMAT = /^[[a-z]\d]{3}+-*+[[a-z]\d]{2}$/i
+  NUMBER_FORMAT = /^[[a-z]\d]{3}+-*+[[a-z]\d]{2}$/i.freeze
 
   @all_trains = []
 
