@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require_relative 'company_name'
-require_relative 'instances_counter'
+require_relative 'instance_counter'
 
 class Train
   include CompanyName
