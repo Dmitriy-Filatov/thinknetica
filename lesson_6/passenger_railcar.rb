@@ -1,17 +1,23 @@
 # frozen_string_literal: true
 
+require_relative 'railcar'
+
 class PassengerRailcar < RailCar
-  def initialize
+  attr_reader :occupied_seats, :seats
+
+  def initialize(seats = 10)
+    @seats = seats
+    @occupied_seats = 0
     @type = 'passenger'
-    @total_seats = 100
   end
 
   def take_seat
-  end
+    return if vacant_seats < 1
 
-  def occupied_seats
+    @occupied_seats += 1
   end
 
   def vacant_seats
+    @seats - @occupied_seats
   end
 end
