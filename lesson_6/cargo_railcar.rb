@@ -3,17 +3,22 @@
 require_relative 'railcar'
 
 class CargoRailcar < RailCar
-  def initialize
+  attr_reader :volume, :occupied_space
+
+  def initialize(volume = 1000)
+    @volume = volume
+    @occupied_space = 0
     @type = 'cargo'
-    @overall_volume = 1000
+    validate!
   end
 
   def take_up_space(volume)
-  end
+    return if volume > @volume
 
-  def occupied_space(volume)
+    @occupied_space += volume if empty_volume >= volume
   end
 
   def empty_volume
+    @volume - @occupied_space
   end
 end
