@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative 'instances_counter'
+require_relative 'instance_counter'
 require_relative 'validate'
 
 class Station
@@ -46,7 +46,15 @@ class Station
   attr_writer :name
 
   def validate!
-    raise 'Name not entered' if name.empty?
-    raise 'Name must not be longer than 40 symbols' if name.length > 40
+    raise_blank_type_error if name.empty?
+    raise_length_error if name.length > 40
+  end
+
+  def raise_blank_type_error
+    raise 'Name not entered'
+  end
+
+  def raise_length_error
+    raise 'Name must not be longer than 40 symbols'
   end
 end
