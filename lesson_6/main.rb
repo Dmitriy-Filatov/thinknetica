@@ -30,10 +30,12 @@ class Main
     puts 'Чтобы назначить маршрут поезду введите 6'
     puts 'Чтобы прицепить вагоны к поезду введите 7'
     puts 'Чтобы отцепить вагоны от поезда введите 8'
-    puts 'Чтобы переместить поезд по маршруту вперед введите 9'
-    puts 'Чтобы переместить поезд по маршруту назад введите 10'
-    puts 'Чтобы просматривать список станций введите 11'
-    puts 'Чтобы просматривать список поездов на станции ведите 12'
+    puts 'Чтобы загрузить вагон или занять место в вагоне введите 9'
+    puts 'Чтобы переместить поезд по маршруту вперед введите 10'
+    puts 'Чтобы переместить поезд по маршруту назад введите 11'
+    puts 'Чтобы просматривать список станций введите 12'
+    puts 'Чтобы просматривать список поездов на станции ведите 13'
+    puts 'Чтобы посмотреть информацию о вагонах введите 14'
     puts 'Чтобы выйти из меню нажмите 0'
   end
 
@@ -66,13 +68,17 @@ class Main
     when '8'
       unhook_the_railcar_from_the_train
     when '9'
-      move_to_next_station_forward
+      take_volume_or_seats
     when '10'
-      move_to_previous_station_back
+      move_to_next_station_forward
     when '11'
-      view_station_list
+      move_to_previous_station_back
     when '12'
+      view_station_list
+    when '13'
       view_the_list_of_the_trains_at_the_station
+    when '14'
+      view_the_list_of_the_railcars_for_the_train
     end
   end
 
@@ -164,12 +170,26 @@ class Main
     puts "Поезду номер #{train.number} назначен маршрут #{route.name}."
   end
 
+  def create_railcar(train)
+    case train.type
+    when 'cargo'
+      print 'Введите объём вагона'
+      volume = gets.chomp.to_i
+      CargoRailcar.new(volume)
+    when 'passenger'
+      print 'введите количество мест в вагоне'
+      seats = gets.chomp.to_i
+      PassengerRailcar.new(seats)
+    end
+  end
+
   def hook_the_railcar_to_the_train
     puts 'Прицепляем вагон. Сначала введите назначенный поезду номер.'
     @trains.each { |train| puts train.number }
     number = gets.to_i
     train = @trains.detect { |train| train.number.to_i == number }
-    train.hitch_a_railcar(RailCar.new(train.type))
+    railcar = create_railcar(train)
+    train.hitch_a_railcar(railcar)
     puts "В поезде #{train.number} - #{train.railcars.size} вагонов."
   end
 
@@ -180,6 +200,26 @@ class Main
     train = @trains.detect { |train| train.number.to_i == number }
     train.uncouple_a_railcar(train.railcars.last)
     puts "В поезде #{train.number} - #{train.railcars.size} вагонов."
+  end
+
+  def take_volume_or_seats
+    puts 'Загружаем вагон (занимаем места)'
+    puts 'Сначала введите назначенный поезду номер.'
+    @trains.each { |train| puts train.number }
+    number = gets.to_i
+    train = @trains.detect { |train| train.number.to_i == number }
+    puts "Выбран поезд #{train.number}. Количество вагонов: #{train.railcars.count}"
+    print 'Введите номер вагона'
+    number = gets.chomp.to_i - 1
+    loading_railcar = train.railcars[number]
+    puts 'Введите загружаемый объем'
+    volume = gets.chomp.to_i if loading_railcar.type == 'cargo'
+    loading_railcar.type == 'cargo' ? loading_railcar.take_up_space(volume) : loading_railcar.take_seat
+    puts 'Готово'
+    puts loading_railcar.info
+  rescue RuntimeError => e
+    puts e.message
+    retry
   end
 
   def move_to_next_station_forward
@@ -206,11 +246,23 @@ class Main
   end
 
   def view_the_list_of_the_trains_at_the_station
-    puts 'Смотрим список поездов. Введите порядковый номер станции.'
+    puts 'Смотрим список поездов на станции. Введите порядковый номер станции.'
     @stations.each.with_index(1) { |station, index| puts "#{index}. #{station.name}" }
     station_index = gets.to_i
     station = @stations[station_index - 1]
     puts "На станции #{station.name} следующие поезда #{station.trains}"
+  end
+
+  def view_the_list_of_the_railcars_for_the_train
+    puts 'Вводим назначенный поезду из списка номер и смотрим информацию о вагонах.'
+    @trains.each_with_index { |train, number| puts "#{number}. #{train.number}" }
+    number = gets.to_i
+    train = @trains.detect { |train| train.number.to_i == number }
+    puts "У поезда #{train.number} вагоны: "
+    train.each_railcar { |railcar| puts railcar.info }
+  rescue StandardError => e
+    puts e.message
+    retry
   end
 end
 
