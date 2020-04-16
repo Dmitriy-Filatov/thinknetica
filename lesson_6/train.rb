@@ -11,7 +11,7 @@ class Train
   include InstanceCounter
   include Validate
 
-  NUMBER_FORMAT = /^[[a-z]\d]{3}+-*+[[a-z]\d]{2}$/i
+  NUMBER_FORMAT = /^[[a-z]\d]{3}+-*+[[a-z]\d]{2}$/i.freeze
 
   @all_trains = []
 
@@ -79,11 +79,11 @@ class Train
     current_station.send_train(self)
   end
 
-  def each_railcar(&block)
-    raise "Train #{number} has no raicars." if @railcars.empty?
+  def each_railcar
+    raise "У поезда #{number} нет вагонов." if @railcars.empty?
 
     @railcars.each_whith_index do |railcar, number|
-      block.call(railcar, number) if block_given?
+      yield(railcar, number) if block_given?
     end
   end
 
