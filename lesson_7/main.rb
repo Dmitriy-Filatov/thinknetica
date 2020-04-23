@@ -13,6 +13,7 @@ require_relative 'railcar'
 require_relative 'passenger_railcar'
 require_relative 'cargo_railcar'
 
+# rubocop:disable Metrics/ClassLength
 class Main
   def initialize
     @stations = []
@@ -21,6 +22,7 @@ class Main
     @railcars = []
   end
 
+  # rubocop:disable Metrics/MethodLength
   def print_menu
     puts 'Чтобы создать станцию введите 1'
     puts 'Чтобы создать поезда введите 2'
@@ -49,6 +51,8 @@ class Main
     end
   end
 
+  # rubocop:disable Metrics/AbcSize
+  # rubocop:disable Metrics/CyclomaticComplexity
   def detect_user_input(menu_number)
     case menu_number
     when '1'
@@ -81,6 +85,7 @@ class Main
       view_the_list_of_the_railcars_for_the_train
     end
   end
+  # rubocop:enable Metrics/CyclomaticComplexity
 
   private
 
@@ -91,7 +96,9 @@ class Main
     station_name = gets.chomp
     @stations << Station.new(station_name)
     puts 'Созданы станции:'
-    @stations.each.with_index(1) { |station, index| puts "#{index}. #{station.name}" }
+    @stations.each.with_index(1) do |station, index|
+      puts "#{index}. #{station.name}"
+    end
   end
 
   def create_train
@@ -107,21 +114,18 @@ class Main
         puts 'Введите номер поезда.'
         number = gets.chomp
         PassengerTrain.new(number)
-      else
-        puts 'Хм ... Введите 1, если поезд грузовой, 2, если пассажирский.'
       end
     @trains << train if train
     puts 'Созданы поезда:'
-    @trains.each.with_index(1) { |train, index| puts "#{index}. #{train.number}" }
+    @trains.each.with_index(1) { |t, i| puts "#{i}. #{t.number}" }
   end
 
   def create_route
-    puts 'Создаем маршрут. Сначала введите номер станции отправления.'
-    @stations.each.with_index(1) { |station, index| puts "#{index}. #{station.name}" }
+    puts 'Создаем маршрут. Введите номер станции отправления, затем прибытия.'
+    @stations.each.with_index(1) { |s, i| puts "#{i}. #{s.name}" }
     station_index = gets.to_i
     first_station = @stations[station_index - 1]
-    puts 'Теперь введите номер станции прибытия.'
-    @stations.each.with_index(1) { |station, index| puts "#{index}. #{station.name}" }
+    @stations.each.with_index(1) { |s, index| puts "#{index}. #{s.name}" }
     station_index = gets.to_i
     last_station = @stations[station_index - 1]
     route = Route.new(first_station, last_station)
@@ -131,12 +135,11 @@ class Main
 
   def add_station_to_the_route
     puts 'Добавим в маршрут промежуточные станции. Введите номер маршрута.'
-    @routes.each.with_index(1) { |route, index| puts "#{index}. #{route.name}" }
+    @routes.each.with_index(1) { |r, i| puts "#{i}. #{r.name}" }
     route_index = gets.to_i
     route = @routes[route_index - 1]
     puts 'Введите номер промежуточной станции'
-    puts 'Станции:'
-    @stations.each.with_index(1) { |station, index| puts "#{index}. #{station.name}" }
+    @stations.each.with_index(1) { |s, i| puts "#{i}. #{s.name}" }
     station_index = gets.to_i
     station = @stations[station_index - 1]
     route.get_station(station)
@@ -145,12 +148,11 @@ class Main
 
   def delete_station_from_the_route
     puts 'Удалим станцию из маршрута. Сначала введите номер маршрута.'
-    @routes.each.with_index(1) { |route, index| puts "#{index}. #{route.name}" }
+    @routes.each.with_index(1) { |r, i| puts "#{i}. #{r.name}" }
     route_index = gets.to_i
     route = @routes[route_index - 1]
     puts 'Теперь введите номер удаляемой станции.'
-    puts 'Станции:'
-    @stations.each.with_index(1) { |station, index| puts "#{index}. #{station.name}" }
+    @stations.each.with_index(1) { |s, i| puts "#{i}. #{s.name}" }
     station_index = gets.to_i
     station = @stations[station_index - 1]
     route.delete_station(station)
@@ -159,11 +161,11 @@ class Main
 
   def set_a_train_route
     puts 'Назначаем поезду маршрут. Сначала введите порядковый номер поезда.'
-    @trains.each.with_index(1) { |train, index| puts "#{index}. #{train.number}" }
+    @trains.each.with_index(1) { |t, i| puts "#{i}. #{t.number}" }
     train_index = gets.to_i
     train = @trains[train_index - 1]
     puts 'Теперь введите номер маршрута.'
-    @routes.each.with_index(1) { |route, index| puts "#{index}. #{route.name}" }
+    @routes.each.with_index(1) { |r, i| puts "#{i}. #{r.name}" }
     route_index = gets.to_i
     route = @routes[route_index - 1]
     train.assign_route(route)
@@ -187,7 +189,7 @@ class Main
     puts 'Прицепляем вагон. Сначала введите назначенный поезду номер.'
     @trains.each { |train| puts train.number }
     number = gets.to_i
-    train = @trains.detect { |train| train.number.to_i == number }
+    train = @trains.detect { |t| t.number.to_i == number }
     railcar = create_railcar(train)
     train.hitch_a_railcar(railcar)
     puts "В поезде #{train.number} - #{train.railcars.size} вагонов."
@@ -197,18 +199,18 @@ class Main
     puts 'Отцепляем вагон. Сначала введите назначенный поезду номер.'
     @trains.each { |train| puts train.number }
     number = gets.to_i
-    train = @trains.detect { |train| train.number.to_i == number }
+    train = @trains.detect { |t| t.number.to_i == number }
     train.uncouple_a_railcar(train.railcars.last)
     puts "В поезде #{train.number} - #{train.railcars.size} вагонов."
   end
 
+  # rubocop:disable Layout/LineLength
   def take_volume_or_seats
-    puts 'Загружаем вагон (занимаем места)'
-    puts 'Сначала введите назначенный поезду номер.'
+    puts 'Загружаем вагон (занимаем места). Введите назначенный поезду номер.'
     @trains.each { |train| puts train.number }
     number = gets.to_i
-    train = @trains.detect { |train| train.number.to_i == number }
-    puts "Выбран поезд #{train.number}. Количество вагонов: #{train.railcars.count}"
+    train = @trains.detect { |t| t.number.to_i == number }
+    puts "Выбран поезд #{train.number}. Всего вагонов: #{train.railcars.count}"
     print 'Введите номер вагона'
     number = gets.chomp.to_i - 1
     loading_railcar = train.railcars[number]
@@ -221,43 +223,48 @@ class Main
     puts e.message
     retry
   end
+  # rubocop:enable Layout/LineLength
 
   def move_to_next_station_forward
-    puts "Выбираем поезд: введите назначенный поезду номер."
+    puts 'Выбираем поезд: введите назначенный поезду номер.'
     @trains.each { |train| puts train.number }
     number = gets.to_i
-    train = @trains.detect { |train| train.number.to_i == number }
+    train = @trains.detect { |t| t.number.to_i == number }
     train.move_to_next_station
     puts "Поезд прибыл на станцию #{train.current_station.name}"
   end
 
   def move_to_previous_station_back
-    puts "Выбираем поезд: введите назначенный поезду номер."
+    puts 'Выбираем поезд: введите назначенный поезду номер.'
     @trains.each { |train| puts train.number }
     number = gets.to_i
-    train = @trains.detect { |train| train.number.to_i == number }
+    train = @trains.detect { |t| t.number.to_i == number }
     train.move_to_previous_station
     puts "Поезд прибыл на станцию #{train.current_station.name}"
   end
 
   def view_station_list
     puts 'Cписок всех станций:'
-    @stations.each.with_index(1) { |station, index| puts "#{index}. #{station.name}" }
+    @stations.each.with_index(1) do |station, index|
+      puts "#{index}. #{station.name}"
+    end
   end
 
   def view_the_list_of_the_trains_at_the_station
     puts 'Смотрим список поездов на станции. Введите порядковый номер станции.'
-    @stations.each.with_index(1) { |station, index| puts "#{index}. #{station.name}" }
+    @stations.each.with_index(1) do |station, index|
+      puts "#{index}. #{station.name}"
+    end
     station_index = gets.to_i
     station = @stations[station_index - 1]
     puts "На станции #{station.name} следующие поезда #{station.trains}"
   end
 
   def view_the_list_of_the_railcars_for_the_train
-    puts 'Вводим назначенный поезду из списка номер и смотрим информацию о вагонах.'
-    @trains.each_with_index { |train, number| puts "#{number}. #{train.number}" }
+    puts 'Вводим назначенный поезду из списка номер и смотрим инфо о вагонах.'
+    @trains.each_with_index { |t, n| puts "#{n}. #{t.number}" }
     number = gets.to_i
-    train = @trains.detect { |train| train.number.to_i == number }
+    train = @trains.detect { |t| t.number.to_i == number }
     puts "У поезда #{train.number} вагоны: "
     train.each_railcar { |railcar| puts railcar.info }
   rescue StandardError => e
@@ -265,5 +272,8 @@ class Main
     retry
   end
 end
+# rubocop:enable Metrics/MethodLength
+# rubocop:enable Metrics/AbcSize
+# rubocop:enable Metrics/ClassLength
 
 Main.new.start

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require_relative 'company_name'
-require_relative 'instances_counter'
+require_relative 'instance_counter'
 require_relative 'validate'
 require_relative 'station'
 require_relative 'railcar'
@@ -28,9 +28,9 @@ class Train
   attr_reader :number, :type, :railcars, :speed, :route
   attr_writer :number, :type
 
-  def initialize(number, type)
+  def initialize(number, options = {})
     @number = number
-    @type = type
+    @type = options[:type] || 'Unknown'
     @speed = 0
     @railcars = []
     validate!
