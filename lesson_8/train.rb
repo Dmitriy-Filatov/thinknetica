@@ -2,16 +2,25 @@
 
 require_relative 'company_name'
 require_relative 'instance_counter'
-require_relative 'validate'
+require_relative 'accessors'
+require_relative 'validation'
 require_relative 'station'
 require_relative 'railcar'
 
 class Train
+  extend Accessors
   include CompanyName
   include InstanceCounter
-  include Validate
+  include Validation
 
   NUMBER_FORMAT = /^[[a-z]\d]{3}+-*+[[a-z]\d]{2}$/i.freeze
+
+  attr_accessor_with_history :railcars
+  attr_reader :number, :type, :railcars, :speed, :route
+  attr_writer :number, :type
+
+  validate :number, :presence
+  validate :number, :format, NUMBER_FORMAT
 
   @all_trains = []
 
@@ -24,9 +33,6 @@ class Train
       @all_trains.detect { |train| train.number == number }
     end
   end
-
-  attr_reader :number, :type, :railcars, :speed, :route
-  attr_writer :number, :type
 
   def initialize(number, options = {})
     @number = number

@@ -1,9 +1,6 @@
 # frozen_string_literal: true
 
-require 'pry'
-require_relative 'company_name'
-require_relative 'instance_counter'
-require_relative 'validate'
+# require 'pry'
 require_relative 'station'
 require_relative 'route'
 require_relative 'train'
@@ -14,7 +11,7 @@ require_relative 'passenger_railcar'
 require_relative 'cargo_railcar'
 
 # rubocop:disable Metrics/ClassLength
-class Main
+class RailRoad
   def initialize
     @stations = []
     @trains = []
@@ -276,4 +273,4 @@ end
 # rubocop:enable Metrics/AbcSize
 # rubocop:enable Metrics/ClassLength
 
-Main.new.start
+RailRoad.new.start

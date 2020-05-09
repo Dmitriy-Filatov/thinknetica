@@ -1,11 +1,22 @@
 # frozen_string_literal: true
 
 require_relative 'instance_counter'
-require_relative 'validate'
+require_relative 'accessors'
+require_relative 'validation'
+require_relative 'train'
 
 class Station
+  extend Accessors
   include InstanceCounter
-  include Validate
+  include Validation
+
+  attr_accessor_with_history :trains
+  attr_reader :name, :trains
+
+  strong_attr_accessor :test_var, TestClass
+
+  validate :name, :presence
+  validate :name, :type, String
 
   @all = []
 
@@ -16,8 +27,6 @@ class Station
       @all << object
     end
   end
-
-  attr_reader :name, :trains
 
   def initialize(name)
     @name = name
